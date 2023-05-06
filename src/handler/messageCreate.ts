@@ -7,6 +7,7 @@ import {
 } from "openai";
 import { apikey } from "../config.json";
 import { Config, JsonDB } from "node-json-db";
+import { textFormat } from "../modules/text/textFormatting";
 
 const db = new JsonDB(new Config("db/conversations", true, false, "/"));
 
@@ -14,7 +15,7 @@ const run = async (client: Client, message: Message) => {
   try {
     if (message.author.bot) return;
     if (message.channel.type === 2) return;
-    if (!message.content.toLowerCase().startsWith("test")) return;
+    if (!message.content.toLowerCase().startsWith("testing")) return;
 
     const member = message.member as GuildMember;
     const config = new Configuration({ apiKey: apikey });
@@ -57,7 +58,7 @@ const run = async (client: Client, message: Message) => {
             32. If "user" wants to know the "assistant" birthday, mention the "assistant" birthday and the "assistant" will reply with a message saying that "assistant" birthday is 1 day ago.
             
             If "user" wants to know his data like who is, the "assistant" will reply with a message saying using the chat context of the chat:
-            Context of the chat:
+            Context of the user data and assistant data:
             "user" data:
                 user name: ${message.author.username}
                 user id: ${message.author.id}
@@ -101,7 +102,7 @@ const run = async (client: Client, message: Message) => {
       role: "user",
     });
 
-    if ((conv?.length ?? 1) > 10) conv?.shift();
+    if ((conv?.length ?? 1) > 5) conv?.shift();
 
     const gptConversation =
       conv?.map((x) => {
@@ -117,13 +118,13 @@ const run = async (client: Client, message: Message) => {
     const completion = await test.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{ role: "system", content: rules }, ...gptConversation],
-      max_tokens: 150,
+      max_tokens: 350,
     });
 
-    m1.edit({
+  m1.edit({
       embeds: [
         {
-          description: `> **${completion.data.choices[0].message?.content}**`,
+          description: `${textFormat(completion.data.choices[0].message?.content ?? '')}`,
           color: Colors.Aqua,
           footer: {
             text: `Este forma parte de tu conversación: ${message.member?.id}, las conversaciones se guardan por 10 mensajes.`,
