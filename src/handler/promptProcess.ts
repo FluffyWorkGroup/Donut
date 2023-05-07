@@ -35,7 +35,7 @@ const run = async (
     footer: {
       text: `Tomó ${
         ((Date.now() - data.date) / 1000).toFixed(2)
-      } segundos | Conversación con el id: ${data.message.author.id}} | Respuesta generada por el modelo: ${response?.apiResponse.data.model}`,
+      } segundos | Conversación con el id: ${data.message.author.id} | Respuesta generada por el modelo: ${response?.apiResponse.data.model}`,
     },
   };
 
