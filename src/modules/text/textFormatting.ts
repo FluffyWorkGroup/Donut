@@ -35,3 +35,13 @@ export function textFormat(text: string) {
 
   return `> **${text}**`;
 }
+
+export function usernameFormat(text: string) {
+  
+  if (text.length > 30) text = text.slice(0, 30);
+  if (text.includes(" ")) text = text.split(" ").join("_");
+  if (text.includes("-")) text = text.split("-").join("_");
+  if (text.match(/[^a-zA-Z0-9_]/g)) text = text.replace(/[^a-zA-Z0-9_]/g, "");
+  if (text == "") return undefined;
+  return text;
+}
