@@ -1,18 +1,15 @@
 import { Client } from "discord.js";
-import { readdirSync } from "fs";
 import config from "./config.json";
 import { lstat, readdir } from "fs/promises";
 import { join } from "path";
 
 const client = new Client({
-  intents: [
-    3276799
-  ],
+  intents: [3276799],
 });
 
-client.once('ready', async () => {
-  console.log("✅ - DonutGPT esta sirviendo")
-})
+client.once("ready", async () => {
+  console.log("✅ - DonutGPT esta sirviendo");
+});
 
 client.login(config.token);
 
@@ -28,15 +25,13 @@ function handlers(client: Client) {
         let eventName = file.substring(0, file.indexOf(".ts"));
         try {
           let event = await import(join(__dirname, dir, file));
-          console.log(event)
           client.on(eventName, event.default.bind(client, client));
         } catch (e) {
           console.error(`El evento ${eventName} falló al importarse: \n${e}`);
         }
       }
     }
-  })()
+  })();
 }
 
 handlers(client);
-

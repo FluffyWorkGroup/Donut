@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { apikey } from "../../config.json";
 import { textFormat } from "../text/textFormatting";
 
@@ -25,30 +25,32 @@ type codexModel =
 export class gptModels {
   model: gptModel | codexModel;
   mode: "chat" | "answer";
-  cachedChatMessages: any[];
+  cachedChatMessages: ChatCompletionRequestMessage[];
   customSettings?: {
     temperature?: number;
     top_p?: number;
-    frecuency_penalty?: number;
+    frequency_penalty?: number;
     presence_penalty?: number;
   };
   rules?: string;
+  context?: string;
   maxTokens?: number;
 
   constructor(
     model: gptModel | codexModel,
     mode: "chat" | "answer" = "chat",
     rules?: string,
-    cachedChatMessages: any[] = [],
+    context?: string,
+    cachedChatMessages: ChatCompletionRequestMessage[] = [],
     customSettings: {
       temperature?: number;
       top_p?: number;
-      frecuency_penalty?: number;
+      frequency_penalty?: number;
       presence_penalty?: number;
     } = {
       temperature: 0.7,
       top_p: 1,
-      frecuency_penalty: 0,
+      frequency_penalty: 0,
       presence_penalty: 0,
     },
     maxTokens: number = 350
@@ -56,6 +58,7 @@ export class gptModels {
     this.model = model;
     this.mode = mode;
     this.rules = rules;
+    this.context = context;
     this.cachedChatMessages = cachedChatMessages;
     this.customSettings = customSettings;
     this.maxTokens = maxTokens;
@@ -77,7 +80,7 @@ export class gptModels {
     };
   }
 
-  async getModelAnswer(question: string) {
+  async #getModelAnswer(question: string) {
     question = textFormat(question) ?? "";
 
     const { openai, configuration, model } = this.#getGptModel();
@@ -89,36 +92,38 @@ export class gptModels {
     });
 
     return {
-      responses: response.data.choices,
+      responses: response.data.choices.map((x) => x?.text ?? ""),
       question,
       apiResponse: response,
     };
   }
 
-  async getChatAnswer(question: string) {
-    question = textFormat(question) ?? "";
-
+  async #getChatAnswer(question: string) {
     const { openai, configuration, model } = this.#getGptModel();
+    try {
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: this.rules ?? "" },
+          { role: "system", content: this.context ?? "" },
+          ...this.cachedChatMessages,
+          { role: "user", content: question },
+        ],
+        ...this.customSettings,
+      });
 
-    const response = await openai.createChatCompletion({
-      model: model,
-      messages: [
-        { role: "system", content: this.rules ?? "" },
-        ...this.cachedChatMessages,
-        { role: "user", content: question },
-      ],
-      ...configuration,
-    });
-
-    return {
-      responses: response.data.choices,
-      question,
-      apiResponse: response,
-    };
+      return {
+        responses: response.data.choices.map((x) => x.message?.content),
+        question,
+        apiResponse: response,
+      };
+    } catch (e: any) {
+      console.error(e.config.data);
+    }
   }
 
   async getAnswer(question: string) {
-    if (this.mode === "chat") return this.getChatAnswer(question);
-    else return this.getModelAnswer(question);
+    if (this.mode === "chat") return this.#getChatAnswer(question);
+    else return this.#getModelAnswer(question);
   }
 }
