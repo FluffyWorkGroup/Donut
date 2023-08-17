@@ -15,7 +15,7 @@
     "discord.js": "^14.10.2",
     "fs": "^0.0.1-security",
     "node-json-db": "^2.2.0",
-    "openai": "^3.1.0",
+    "openai": "^4.0.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
