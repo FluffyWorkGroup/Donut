@@ -477,9 +477,9 @@ mkdirp@^1.0.4:
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
 node-json-db@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/node-json-db/-/node-json-db-2.2.0.tgz#b41b20fde20777a67af2fa4af6c4163de39a0284"
-  integrity sha512-GBuXPjItZ+XivMxR7bhSjVeXKiHZKRN/HbvqrwVemV6V5atcnIIZbg2J2vJHE6RYHydtPCJoUy05YaK4wQO0TA==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/node-json-db/-/node-json-db-2.3.0.tgz#cec666e7b3b4e2a3e33c60962def0fe3ff1f3027"
+  integrity sha512-B8T+w4q6zXZ20YcfQINLSjMGgImRKzkvR0ShYYoNRdLxtMhVvbzaMBzNdEaRcCjilW/lKS+g9CwVXNoK5uTncw==
   dependencies:
     rwlock "^5.0.0"
 
