@@ -19,6 +19,6 @@ module.exports = config.bot({
 		output: "src",
 		commands: "commands",
 		components: "components",
-		events: "events"
+		events: "events",
 	},
 });

@@ -1,7 +1,9 @@
 {
- "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
- "extends": ["./base.json"],
- "overrides": [{
-    
- }]
+	"$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
+	"extends": ["./base.json"],
+	"overrides": [
+		{
+			"ignore": ["node_modules/**", "dist/**"]
+		}
+	]
 }

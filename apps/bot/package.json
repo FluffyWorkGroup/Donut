@@ -3,8 +3,7 @@
 	"version": "0.0.0",
 	"scripts": {
 		"dev": "bun run --watch --bun src/index.ts dev",
-		"start": "bun run src/index.ts",
-		"build": "bun build src/index.ts"
+		"start": "bun run --bun src/index.ts start"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",
