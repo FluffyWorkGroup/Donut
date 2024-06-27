@@ -1,1 +1,3 @@
-export const DEBUG = false;
+import { DEBUG as debug } from "@donut/common"
+
+export const DEBUG = debug;
