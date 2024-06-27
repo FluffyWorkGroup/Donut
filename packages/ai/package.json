@@ -1,0 +1,9 @@
+{
+	"name": "ai-wrapper",
+	"version": "1.0.0",
+	"description": "Wrapper for AI services",
+	"main": "index.ts",
+	"dependencies": {
+		"openai": "^4.52.1"
+	}
+}

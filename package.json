@@ -1,0 +1,32 @@
+{
+  "name": "donut",
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.2",
+    "@types/bun": "latest",
+    "turbo": "latest",
+    "tsconfig": "workspace:*",
+    "biome-config": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "biome lint app/ packages/",
+      "biome format --write apps/ packages/"
+    ]
+  },
+  "packageManager": "bun@1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "biome lint apps/ packages/",
+    "format": "biome format --write apps/ packages/"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ],
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"]
+}
