@@ -1,3 +1,4 @@
+import { logger } from "..";
 import {
 	createMessage,
 	findOrCreateChatByAuthorId,
@@ -14,6 +15,9 @@ export async function injectNewMessageInChat(
 		role: string;
 	},
 ) {
+	logger.debug(
+		`Injecting new message from ${author.username} with ID ${author.id} into chat...`,
+	);
 	const chatsWithAuthor = await findOrCreateChatByAuthorId(author);
 
 	return await createMessage(

@@ -13,6 +13,7 @@ import type {
 	CompletionCreateParamsNonStreaming,
 } from "openai/resources/completions.mjs";
 import type { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions.mjs";
+import { logger } from "../..";
 
 const regions: ChatModel[] = [
 	"gpt-4o",
@@ -63,7 +64,7 @@ async function chatBaseRequest(
 ): Promise<
 	APIPromise<Stream<ChatCompletionChunk> | ChatCompletion> | undefined
 > {
-	console.info("chatBaseRequest", model, params, stream, optionalParams);
+	logger.debug("chatBaseRequest", model, params, stream, optionalParams);
 	const response = await openai.chat.completions.create({
 		model,
 		messages: params,
@@ -71,7 +72,7 @@ async function chatBaseRequest(
 		...optionalParams,
 	});
 
-	console.info("chatBaseRequest response", response);
+	logger.debug("chatBaseRequest response", response);
 
 	if (!response) return undefined;
 
@@ -99,7 +100,7 @@ async function completionRequest(
 		...optionalParams,
 	});
 
-	console.info("completionRequest response", response);
+	logger.debug("completionRequest response", response);
 
 	if (!response) return undefined;
 

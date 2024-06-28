@@ -2,7 +2,8 @@
 	"name": "bot",
 	"version": "0.0.0",
 	"scripts": {
-		"dev": "bun run --watch --bun src/index.ts dev",
+		"dev": "bun run --watch --bun src/index.ts",
+		"dev:debug": "bun run --watch --inspect --bun src/index.ts dev",
 		"start": "bun run --bun src/index.ts start"
 	},
 	"dependencies": {

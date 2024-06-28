@@ -1,6 +1,11 @@
 {
 	"name": "db",
 	"version": "0.0.0",
+	"scripts": {
+		"migrate": "prisma migrate dev",
+		"generate": "prisma generate",
+		"studio": "prisma studio"
+	},
 	"devDependencies": {
 		"prisma": "^5.16.1"
 	},

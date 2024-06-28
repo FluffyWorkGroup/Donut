@@ -3,6 +3,7 @@ import {
 	findOrCreateChatByAuthorId,
 	findUserByChatID,
 	getChat,
+	logger,
 	prisma,
 } from "..";
 import type { GetBatchResult } from "@prisma/client/runtime/library";
@@ -13,6 +14,7 @@ import type { GetBatchResult } from "@prisma/client/runtime/library";
  */
 
 export async function getMessages(): Promise<Message[]> {
+	logger.debug("Retrieving all messages from the database...");
 	return await prisma.message.findMany();
 }
 
@@ -22,6 +24,7 @@ export async function getMessages(): Promise<Message[]> {
  * @returns A promise that resolves to the message object if found, or null if not found
  */
 export async function getMessage(id: string): Promise<Message | null> {
+	logger.debug(`Retrieving message with ID ${id} from the database...`);
 	return await prisma.message.findUnique({ where: { id } });
 }
 
@@ -39,7 +42,7 @@ export async function createMessage(
 	const chat = await getChat(context.chatId);
 	const author = await findUserByChatID(chat?.id ?? "");
 
-	console.log(chat, author);
+	logger.debug(`Creating a new message for chat ${chat?.id}...`);
 
 	return await prisma.message.create({
 		data: {
@@ -69,6 +72,7 @@ export async function updateMessage(
 	id: string,
 	data: Partial<Message>,
 ): Promise<Message> {
+	logger.debug(`Updating message with ID ${id}...`);
 	return await prisma.message.update({ where: { id }, data });
 }
 
@@ -78,6 +82,7 @@ export async function updateMessage(
  * @returns A promise that resolves to the deleted message
  */
 export async function deleteMessage(id: string): Promise<Message> {
+	logger.debug(`Deleting message with ID ${id}...`);
 	return await prisma.message.delete({ where: { id } });
 }
 
@@ -86,6 +91,7 @@ export async function deleteMessage(id: string): Promise<Message> {
  * @returns A promise that resolves to the number of messages deleted
  */
 export async function deleteAllMessages(): Promise<GetBatchResult> {
+	logger.debug("Deleting all messages from the database...");
 	return await prisma.message.deleteMany();
 }
 
@@ -95,6 +101,7 @@ export async function deleteAllMessages(): Promise<GetBatchResult> {
  */
 
 export async function countMessages(): Promise<number> {
+	logger.debug("Counting the number of messages in the database...");
 	return await prisma.message.count();
 }
 
@@ -104,6 +111,7 @@ export async function countMessages(): Promise<number> {
  * @returns A promise that resolves to the found message, or null if no message is found
  */
 export async function findMessageByID(id: string): Promise<Message | null> {
+	logger.debug(`Finding message with ID ${id}...`);
 	return await prisma.message.findUnique({ where: { id } });
 }
 
@@ -113,5 +121,6 @@ export async function findMessageByID(id: string): Promise<Message | null> {
  * @returns A promise that resolves to an array of messages found
  */
 export async function findMessagesByUserID(id: string): Promise<Message[]> {
+	logger.debug(`Finding messages by user ID ${id}...`);
 	return await prisma.message.findMany({ where: { authorId: id } });
 }

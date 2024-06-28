@@ -21,11 +21,12 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:debug": "turbo dev:debug",
     "start": "turbo start",
     "lint": "biome lint apps/ packages/",
     "format": "biome format --write apps/ packages/"
   },
-  "trustedDependencies": ["@biomejs/biome"],
+  "trustedDependencies": ["@biomejs/biome", "@prisma/client", "@prisma/engines", "prisma"],
   "type": "module",
   "workspaces": ["packages/*", "apps/*"]
 }

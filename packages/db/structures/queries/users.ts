@@ -1,5 +1,5 @@
 import { DEFAULT_MODEL } from "@donut/common";
-import { prisma } from "..";
+import { logger, prisma } from "..";
 import type { User } from "@prisma/client";
 import type { GetBatchResult } from "@prisma/client/runtime/library";
 
@@ -8,6 +8,7 @@ import type { GetBatchResult } from "@prisma/client/runtime/library";
  * @returns {Promise<User[]>} A promise that resolves to an array of User objects.
  */
 export async function getUsers(): Promise<User[]> {
+	logger.debug("Retrieving all users from the database...");
 	return await prisma.user.findMany();
 }
 
@@ -17,6 +18,7 @@ export async function getUsers(): Promise<User[]> {
  * @returns A Promise that resolves to the user object if found, or null if not found.
  */
 export async function getUser(id: string): Promise<User | null> {
+	logger.debug(`Retrieving user with ID ${id} from the database...`);
 	return await prisma.user.findUnique({ where: { id } });
 }
 
@@ -32,6 +34,7 @@ export async function createUser(
 	username: string,
 	model = DEFAULT_MODEL,
 ): Promise<User> {
+	logger.debug(`Creating a new user with ID ${id}...`);
 	return await prisma.user.create({
 		data: {
 			id: id,
@@ -51,6 +54,7 @@ export async function updateUser(
 	id: string,
 	data: Partial<User>,
 ): Promise<User> {
+	logger.debug(`Updating user with ID ${id}...`);
 	return await prisma.user.update({ where: { id }, data });
 }
 
@@ -60,6 +64,7 @@ export async function updateUser(
  * @returns A promise that resolves to the deleted user.
  */
 export async function deleteUser(id: string): Promise<User> {
+	logger.debug(`Deleting user with ID ${id}...`);
 	return await prisma.user.delete({ where: { id } });
 }
 
@@ -68,6 +73,7 @@ export async function deleteUser(id: string): Promise<User> {
  * @returns {Promise<GetBatchResult>} A promise that resolves to the result of the deletion operation.
  */
 export async function deleteAllUsers(): Promise<GetBatchResult> {
+	logger.debug("Deleting all users from the database...");
 	return await prisma.user.deleteMany();
 }
 
@@ -76,6 +82,7 @@ export async function deleteAllUsers(): Promise<GetBatchResult> {
  * @returns {Promise<number>} The total number of users.
  */
 export async function countUsers(): Promise<number> {
+	logger.debug("Counting the number of users in the database...");
 	return await prisma.user.count();
 }
 
@@ -85,6 +92,7 @@ export async function countUsers(): Promise<number> {
  * @returns A promise that resolves to the found user, or null if no user is found.
  */
 export async function findUserByID(id: string): Promise<User | null> {
+	logger.debug(`Finding user with ID ${id}...`);
 	return await prisma.user.findUnique({ where: { id } });
 }
 
@@ -101,6 +109,7 @@ export async function findOrCreateUser(
 	username: string,
 	model = DEFAULT_MODEL,
 ): Promise<User> {
+	logger.debug(`Finding or creating user with ID ${id}...`);
 	const user = await findUserByID(id);
 	if (user) return user;
 
@@ -113,6 +122,7 @@ export async function findOrCreateUser(
  * @returns A promise that resolves to the found user, or null if no user is found.
  */
 export async function findUserByChatID(chatId: string): Promise<User | null> {
+	logger.debug(`Finding user by chat ID ${chatId}...`);
 	return await prisma.user.findFirst({
 		where: {
 			chats: {

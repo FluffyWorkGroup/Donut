@@ -1,4 +1,7 @@
 {
-	"name": "@donut/common",
-	"version": "0.0.0"
+  "name": "@donut/common",
+  "version": "0.0.0",
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
 }

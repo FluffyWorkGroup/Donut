@@ -3,18 +3,26 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
     },
     "lint": {
       "dependsOn": ["^lint"]
     },
     "dev": {
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
+    },
+    "dev:debug": {
+      "persistent": true,
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
     },
     "start": {
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
     }
   }
 }

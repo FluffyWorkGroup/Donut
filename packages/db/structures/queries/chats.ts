@@ -1,5 +1,5 @@
 import type { Chat, Message, User } from "@prisma/client";
-import { findOrCreateUser, prisma } from "..";
+import { findOrCreateUser, logger, prisma } from "..";
 import { BOT_ID, DEFAULT_MODEL, systemPrompt } from "@donut/common";
 
 /**
@@ -8,6 +8,7 @@ import { BOT_ID, DEFAULT_MODEL, systemPrompt } from "@donut/common";
  */
 
 export async function getChats(): Promise<Chat[]> {
+	logger.debug("Retrieving all chats from the database...");
 	return await prisma.chat.findMany();
 }
 
@@ -17,6 +18,7 @@ export async function getChats(): Promise<Chat[]> {
  * @returns A Promise that resolves to the chat object if found, or null if not found.
  */
 export async function getChat(id: string): Promise<Chat | null> {
+	logger.debug(`Retrieving chat with ID ${id} from the database...`);
 	return await prisma.chat.findUnique({ where: { id } });
 }
 
@@ -34,6 +36,7 @@ export async function createChat(
 	chat: Chat;
 	systemMessage: Message;
 }> {
+	logger.debug(`Creating a new chat for user ${authorInfo.id}...`);
 	let authorData: User | null | undefined = author;
 	if (!authorData) {
 		authorData = await findOrCreateUser(authorInfo.id, authorInfo.username);
@@ -49,11 +52,13 @@ export async function createChat(
 		},
 	});
 
+	logger.debug(`Created chat with ID ${chat.id} for user ${authorInfo.id}.`);
+
 	// push the system prompt to the chat
 	const systemMessage = await prisma.message.create({
 		data: {
 			content: systemPrompt,
-			role: "SYSTEM",
+			role: "system",
 			chat: {
 				connect: {
 					id: chat.id,
@@ -66,6 +71,10 @@ export async function createChat(
 			},
 		},
 	});
+
+	logger.debug(
+		`Pushed system message with ID ${systemMessage.id} to chat with ID ${chat.id}.`,
+	);
 
 	return {
 		chat,
@@ -83,6 +92,7 @@ export async function updateChat(
 	id: string,
 	data: Partial<Chat>,
 ): Promise<Chat> {
+	logger.debug(`Updating chat with ID ${id}...`);
 	return await prisma.chat.update({ where: { id }, data });
 }
 
@@ -92,6 +102,7 @@ export async function updateChat(
  * @returns A promise that resolves to the deleted chat.
  */
 export async function deleteChat(id: string): Promise<Chat> {
+	logger.debug(`Deleting chat with ID ${id}...`);
 	return await prisma.chat.delete({ where: { id } });
 }
 
@@ -104,6 +115,7 @@ export async function deleteChat(id: string): Promise<Chat> {
 export async function getChatByAuthorId(
 	authorId: string,
 ): Promise<Chat | null> {
+	logger.debug(`Retrieving chat for user ${authorId} from the database...`);
 	return await prisma.chat.findFirst({
 		where: { authorId },
 	});
@@ -118,6 +130,9 @@ export async function getChatByAuthorId(
 export async function getChatByAuthorUsername(
 	authorUsername: string,
 ): Promise<Chat | null> {
+	logger.debug(
+		`Retrieving chat for user ${authorUsername} from the database...`,
+	);
 	return await prisma.chat.findFirst({
 		where: { author: { username: authorUsername } },
 	});
