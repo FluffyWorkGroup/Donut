@@ -29,33 +29,48 @@ export async function getChat(id: string): Promise<Chat | null> {
 
 export async function createChat(
 	authorInfo: { id: string; username: string },
-	messages: (Omit<Message, "id" | "authorId" | "chatId" | "createdAt"> & {
-		id?: string;
-		authorId?: string;
-		chatId?: string;
-		createdAt?: string;
-	})[] = [],
 	author?: User,
-): Promise<Chat> {
+): Promise<{
+	chat: Chat;
+	systemMessage: Message;
+}> {
 	let authorData: User | null | undefined = author;
 	if (!authorData) {
 		authorData = await findOrCreateUser(authorInfo.id, authorInfo.username);
 	}
 
-	return await prisma.chat.create({
+	const chat = await prisma.chat.create({
 		data: {
 			author: {
-				connectOrCreate: {
-					where: { id: authorData.id },
-					create: {
-						model: DEFAULT_MODEL,
-						...authorInfo,
-					},
+				connect: {
+					id: authorData.id,
 				},
 			},
-			messages: { create: messages },
 		},
 	});
+
+	// push the system prompt to the chat
+	const systemMessage = await prisma.message.create({
+		data: {
+			content: systemPrompt,
+			role: "SYSTEM",
+			chat: {
+				connect: {
+					id: chat.id,
+				},
+			},
+			author: {
+				connect: {
+					id: authorData.id,
+				},
+			},
+		},
+	});
+
+	return {
+		chat,
+		systemMessage,
+	};
 }
 
 /**
@@ -117,18 +132,14 @@ export async function getChatByAuthorUsername(
 export async function findOrCreateChatByAuthorId(authorInfo: {
 	username: string;
 	id: string;
-}): Promise<Chat> {
+}): Promise<
+	| {
+			chat: Chat;
+			systemMessage: Message;
+	  }
+	| Chat
+> {
 	const chat = await getChatByAuthorId(authorInfo.id);
 	if (chat) return chat;
-	console.log("test");
-	return await createChat(
-		{ id: authorInfo.id, username: authorInfo.username },
-		[
-			{
-				role: "SYSTEM",
-				content: systemPrompt,
-				authorId: BOT_ID,
-			},
-		],
-	);
+	return await createChat({ id: authorInfo.id, username: authorInfo.username });
 }

@@ -1,4 +1,5 @@
 const ai = await import("ai-wrapper/models");
+import { BOT_ID } from "@donut/common";
 import { createChat, findOrCreateUser, injectNewMessageInChat } from "db";
 import {
 	ComponentType,
@@ -79,14 +80,12 @@ export default class Answer extends Command {
 
 		await injectNewMessageInChat(
 			{
-				username: ctx.client.me.username,
-				id: ctx.client.me.id,
+				username: "Donut",
+				id: ctx.author.id,
 			},
 			{
-				content: response,
+				content: response.choices[0].message.content,
 				role: "ASSISTANT",
-				authorId: ctx.client.me.id,
-				username: ctx.client.me.username,
 			},
 		);
 

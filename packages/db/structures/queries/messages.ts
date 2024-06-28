@@ -1,8 +1,3 @@
-/**
- * Retrieves all messages from the database
- * @returns {Promise<Message[]>} A promise that resolves to an array of Message objects
- */
-
 import type { Chat, Message, User } from "@prisma/client";
 import {
 	findOrCreateChatByAuthorId,
@@ -11,6 +6,11 @@ import {
 	prisma,
 } from "..";
 import type { GetBatchResult } from "@prisma/client/runtime/library";
+
+/**
+ * Retrieves all messages from the database
+ * @returns {Promise<Message[]>} A promise that resolves to an array of Message objects
+ */
 
 export async function getMessages(): Promise<Message[]> {
 	return await prisma.message.findMany();
@@ -33,45 +33,31 @@ export async function getMessage(id: string): Promise<Message | null> {
  * @returns A Promise that resolves to the created message.
  */
 export async function createMessage(
-	context: {
-		chatId: string;
-		authorId?: string;
-		author?: User;
-		chat?: Chat;
-	},
-	message: {
-		content: string;
-		role?: string;
-	},
+	context: { chatId: string; authorId: string },
+	message: { content: string; role: string },
 ): Promise<Message> {
-	const authorData: User | null | undefined =
-		context.author ?? (await findUserByChatID(context.chatId));
-	const chatData: Chat | null | undefined =
-		context.chat ??
-		(await findOrCreateChatByAuthorId({
-			id: context.author?.id ?? "",
-			username: context.author?.username ?? "",
-		}));
-	const roleData = message.role ?? "USER";
+	const chat = await getChat(context.chatId);
+	const author = await findUserByChatID(chat?.id ?? "");
+
+	console.log(chat, author);
 
 	return await prisma.message.create({
 		data: {
+			content: message.content,
+			role: message.role,
 			chat: {
 				connect: {
-					id: chatData?.id,
+					id: chat?.id,
 				},
 			},
 			author: {
 				connect: {
-					id: authorData?.id,
+					id: author?.id,
 				},
 			},
-			content: message.content,
-			role: roleData,
 		},
 	});
 }
-
 /**
  * Updates a message in the database
  * @param id - The ID of the message to update

@@ -12,17 +12,18 @@ export async function injectNewMessageInChat(
 	message: {
 		content: string;
 		role: string;
-		
 	},
 ) {
 	const chatsWithAuthor = await findOrCreateChatByAuthorId(author);
+
 	return await createMessage(
 		{
-			chatId: chatsWithAuthor.id,
+			chatId:
+				"chat" in chatsWithAuthor
+					? chatsWithAuthor.chat.id
+					: chatsWithAuthor.id,
+			authorId: author.id,
 		},
-		{
-			content: message.content,
-			role: message.role,
-		},
+		message,
 	);
 }

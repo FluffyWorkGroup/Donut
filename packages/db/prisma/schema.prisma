@@ -11,29 +11,29 @@ datasource db {
 }
 
 model User {
-  id        String    @id @unique
-  createdAt DateTime  @default(now())
+  id        String   @id @unique
+  createdAt DateTime @default(now())
   username  String
   model     String
   chats     Chat[]
-  messages  Message[]
 }
 
 model Chat {
   id        String    @id @unique @default(uuid())
   createdAt DateTime  @default(now())
   authorId  String?
-  messages  Message[]
+  messages  Message[] @relation(name: "MessageToChat")
   author    User?     @relation(fields: [authorId], references: [id])
+  Message   Message[]
 }
 
 model Message {
   id        String   @id @unique @default(uuid())
   chatId    String
   createdAt DateTime @default(now())
-  authorId  String?
-  author    User?    @relation(fields: [authorId], references: [id])
-  chat      Chat     @relation(fields: [chatId], references: [id])
+  authorId  String
   content   String
   role      String
+  chat      Chat     @relation(name: "MessageToChat", fields: [chatId], references: [id])
+  author    Chat     @relation(fields: [authorId], references: [id])
 }
