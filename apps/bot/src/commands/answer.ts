@@ -1,4 +1,5 @@
 const ai = await import("ai-wrapper/models");
+import { findOrCreateUser } from "db";
 import {
 	ComponentType,
 	type APIActionRowComponent,
@@ -33,6 +34,8 @@ const options = {
 export default class Answer extends Command {
 	async run(ctx: CommandContext<typeof options>) {
 		const date = Date.now();
+		const user = await findOrCreateUser(ctx.author.id, ctx.author.username);
+
 		ctx.deferReply(false);
 
 		const models = Object.keys(ai.models.openai.gpt.chat.stream);
@@ -44,7 +47,7 @@ export default class Answer extends Command {
 			})),
 			type: ComponentType.StringSelect,
 		})
-			.setCustomId("model")
+			.setCustomId(`model:${ctx.author.id}`)
 			.setPlaceholder("Select a model")
 			.toJSON();
 
@@ -53,7 +56,8 @@ export default class Answer extends Command {
 			components: [menu],
 		} as APIActionRowComponent<APISelectMenuComponent>;
 
-		const response = await ai.models.openai.gpt.chat.normal["gpt-3.5-turbo"]([
+		// @ts-ignore
+		const response = await ai.models.openai.gpt.chat.normal[user.model]([
 			{
 				role: "user",
 				content: ctx.options.prompt,
@@ -64,7 +68,7 @@ export default class Answer extends Command {
 			embeds: [
 				{
 					author: {
-						name: "GPT-3.5 Turbo",
+						name: user.model,
 					},
 					description: response.choices[0].message.content ?? "No response",
 					footer: {

@@ -49,7 +49,7 @@ export async function createUser(
  */
 export async function updateUser(
 	id: string,
-	data: { username?: string },
+	data: Partial<User>,
 ): Promise<User> {
 	return await prisma.user.update({ where: { id }, data });
 }

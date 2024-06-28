@@ -10,7 +10,8 @@
 		"discord-api-types": "^0.37.90",
 		"seyfert": "^1.5.0",
 		"ai-wrapper": "workspace:*",
-		"@donut/common": "workspace:*"
+		"@donut/common": "workspace:*",
+		"db": "workspace:*"
 	},
 	"devDependencies": {
 		"tsconfig": "workspace:*"
