@@ -1,5 +1,5 @@
 const ai = await import("ai-wrapper/models");
-import { findOrCreateUser } from "db";
+import { createChat, findOrCreateUser, injectNewMessageInChat } from "db";
 import {
 	ComponentType,
 	type APIActionRowComponent,
@@ -34,7 +34,20 @@ const options = {
 export default class Answer extends Command {
 	async run(ctx: CommandContext<typeof options>) {
 		const date = Date.now();
-		const user = await findOrCreateUser(ctx.author.id, ctx.author.username);
+		const model =
+			ctx.client.usersDBCache.get(ctx.author.id) ??
+			(await findOrCreateUser(ctx.author.id, ctx.author.username)).model;
+
+		const message = await injectNewMessageInChat(
+			{
+				username: ctx.author.username,
+				id: ctx.author.id,
+			},
+			{
+				content: ctx.options.prompt,
+				role: "user",
+			},
+		);
 
 		ctx.deferReply(false);
 
@@ -57,18 +70,31 @@ export default class Answer extends Command {
 		} as APIActionRowComponent<APISelectMenuComponent>;
 
 		// @ts-ignore
-		const response = await ai.models.openai.gpt.chat.normal[user.model]([
+		const response = await ai.models.openai.gpt.chat.normal[model]([
 			{
 				role: "user",
 				content: ctx.options.prompt,
 			},
 		]);
 
+		await injectNewMessageInChat(
+			{
+				username: ctx.client.me.username,
+				id: ctx.client.me.id,
+			},
+			{
+				content: response,
+				role: "ASSISTANT",
+				authorId: ctx.client.me.id,
+				username: ctx.client.me.username,
+			},
+		);
+
 		ctx.editOrReply({
 			embeds: [
 				{
 					author: {
-						name: user.model,
+						name: model,
 					},
 					description: response.choices[0].message.content ?? "No response",
 					footer: {

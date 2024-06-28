@@ -7,6 +7,8 @@ import { DonutMiddlewares } from "../../middlewares";
 export class Donut extends Client<true> {
 	public readonly cooldowns: LimitedCollection<string, number> =
 		new LimitedCollection();
+	public readonly usersDBCache: LimitedCollection<string, string> =
+		new LimitedCollection({ limit: 20 });
 	public readonly config: DonutConfiguration = Configuration;
 	public readonly token = "🍩" as const;
 

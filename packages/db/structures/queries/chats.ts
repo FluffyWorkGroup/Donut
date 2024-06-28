@@ -1,6 +1,6 @@
 import type { Chat, Message, User } from "@prisma/client";
 import { findOrCreateUser, prisma } from "..";
-import { DEFAULT_MODEL } from "@donut/common";
+import { BOT_ID, DEFAULT_MODEL, systemPrompt } from "@donut/common";
 
 /**
  * Retrieves all chats from the database.
@@ -29,7 +29,12 @@ export async function getChat(id: string): Promise<Chat | null> {
 
 export async function createChat(
 	authorInfo: { id: string; username: string },
-	messages: Message[] = [],
+	messages: (Omit<Message, "id" | "authorId" | "chatId" | "createdAt"> & {
+		id?: string;
+		authorId?: string;
+		chatId?: string;
+		createdAt?: string;
+	})[] = [],
 	author?: User,
 ): Promise<Chat> {
 	let authorData: User | null | undefined = author;
@@ -81,10 +86,12 @@ export async function deleteChat(id: string): Promise<Chat> {
  * @returns A promise that resolves to the chat object if found, or null if not found.
  */
 
-export async function getChatByAuthorId(authorId: string): Promise<Chat | null> {
-    return await prisma.chat.findFirst({
-        where: { authorId },
-    });
+export async function getChatByAuthorId(
+	authorId: string,
+): Promise<Chat | null> {
+	return await prisma.chat.findFirst({
+		where: { authorId },
+	});
 }
 
 /**
@@ -94,9 +101,34 @@ export async function getChatByAuthorId(authorId: string): Promise<Chat | null> 
  */
 
 export async function getChatByAuthorUsername(
-    authorUsername: string,
+	authorUsername: string,
 ): Promise<Chat | null> {
-    return await prisma.chat.findFirst({
-        where: { author: { username: authorUsername } },
-    });
+	return await prisma.chat.findFirst({
+		where: { author: { username: authorUsername } },
+	});
+}
+
+/**
+ * Find or create a chat by the author's ID.
+ * @param authorId - The ID of the author.
+ * @returns A promise that resolves to the chat object.
+ */
+
+export async function findOrCreateChatByAuthorId(authorInfo: {
+	username: string;
+	id: string;
+}): Promise<Chat> {
+	const chat = await getChatByAuthorId(authorInfo.id);
+	if (chat) return chat;
+	console.log("test");
+	return await createChat(
+		{ id: authorInfo.id, username: authorInfo.username },
+		[
+			{
+				role: "SYSTEM",
+				content: systemPrompt,
+				authorId: BOT_ID,
+			},
+		],
+	);
 }

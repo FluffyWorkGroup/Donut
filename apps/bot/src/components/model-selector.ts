@@ -37,6 +37,11 @@ export default class ModelSelector extends ComponentCommand {
 
 		await updateUser(user.id, { model });
 
+		if (context.client.usersDBCache.has(user.id)) {
+			context.client.usersDBCache.delete(user.id);
+			context.client.usersDBCache.set(user.id, model);
+		}
+
 		return context.write({
 			embeds: [
 				{

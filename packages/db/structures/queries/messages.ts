@@ -4,7 +4,12 @@
  */
 
 import type { Chat, Message, User } from "@prisma/client";
-import { findUserByChatID, getChat, prisma } from "..";
+import {
+	findOrCreateChatByAuthorId,
+	findUserByChatID,
+	getChat,
+	prisma,
+} from "..";
 import type { GetBatchResult } from "@prisma/client/runtime/library";
 
 export async function getMessages(): Promise<Message[]> {
@@ -21,33 +26,39 @@ export async function getMessage(id: string): Promise<Message | null> {
 }
 
 /**
- * Creates a new message in the database
- * @param chatId - The ID of the chat the message belongs to
- * @param authorId - The ID of the author of the message
- * @param author - The username of the author of the message
- * @param chat - The content of the message
- * @param content - The content of the message
- * @param role - The role of the author of the message
- * @returns {Promise<Message>} A promise that resolves to the created message
+ * Creates a new message and saves it to the database.
+ *
+ * @param context - The context object containing information about the chat and author.
+ * @param message - The message object containing the content and role of the message.
+ * @returns A Promise that resolves to the created message.
  */
 export async function createMessage(
-	chatId: string,
-	content: string,
-	authorId?: string,
-	author?: User,
-	chat?: Chat,
-	role?: string,
+	context: {
+		chatId: string;
+		authorId?: string;
+		author?: User;
+		chat?: Chat;
+	},
+	message: {
+		content: string;
+		role?: string;
+	},
 ): Promise<Message> {
 	const authorData: User | null | undefined =
-		author ?? (await findUserByChatID(chatId));
-	const chatData: Chat | null | undefined = chat ?? (await getChat(chatId));
-	const roleData = role ?? "USER";
+		context.author ?? (await findUserByChatID(context.chatId));
+	const chatData: Chat | null | undefined =
+		context.chat ??
+		(await findOrCreateChatByAuthorId({
+			id: context.author?.id ?? "",
+			username: context.author?.username ?? "",
+		}));
+	const roleData = message.role ?? "USER";
 
 	return await prisma.message.create({
 		data: {
 			chat: {
 				connect: {
-					id: chatId,
+					id: chatData?.id,
 				},
 			},
 			author: {
@@ -55,7 +66,7 @@ export async function createMessage(
 					id: authorData?.id,
 				},
 			},
-			content: content,
+			content: message.content,
 			role: roleData,
 		},
 	});
