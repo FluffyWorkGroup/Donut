@@ -124,3 +124,32 @@ export async function findMessagesByUserID(id: string): Promise<Message[]> {
 	logger.debug(`Finding messages by user ID ${id}...`);
 	return await prisma.message.findMany({ where: { authorId: id } });
 }
+
+/**
+ * Deletes all messages by a user's ID
+ * @param id - The ID of the user
+ * @returns A promise that resolves to the number of messages deleted
+ */
+
+export async function deleteMessagesByUserID(
+	id: string,
+): Promise<GetBatchResult> {
+	logger.debug(`Deleting messages by user ID ${id}...`);
+	return await prisma.message.deleteMany({ where: { authorId: id } });
+}
+
+/**
+ * Delete multiple messages by a filter
+ * @param filter - The filter to apply to the messages
+ * @returns A promise that resolves to the number of messages deleted
+ */
+
+export async function deleteMessagesByFilter(filter: {
+	authorId?: string;
+	chatId?: string;
+	content?: string;
+	role?: string;
+}): Promise<GetBatchResult> {
+	logger.debug(`Deleting messages by filters ${JSON.stringify(filter)}...`);
+	return await prisma.message.deleteMany({ where: filter });
+}
