@@ -16,7 +16,7 @@ export class Donut extends Client<true> {
 
 	constructor() {
 		super({
-			globalMiddlewares: ["checkCooldown"],
+			globalMiddlewares: ["checkCooldown", "logCommand"],
 			allowedMentions: {
 				replied_user: false,
 				parse: ["roles"],

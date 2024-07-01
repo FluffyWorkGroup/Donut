@@ -36,6 +36,8 @@ export const checkCooldown = createMiddleware<void>(
 
 		const { name, type } = getMetadata(context);
 
+		context.client.logger.debug("Checking cooldown for", name, type);
+
 		const cooldown = (command.cooldown ?? 3) * 1000;
 		const timeNow = Date.now();
 		const setKey = `${name}-${type}-${author.id}`;
@@ -47,7 +49,7 @@ export const checkCooldown = createMiddleware<void>(
 				embeds: [
 					{
 						description:
-							"You are on cooldown for this command. Please wait a moment before using it again.",
+							"***You are on cooldown for this command. Please wait a moment before using it again.***",
 						color: EmbedColors.Red,
 					},
 				],

@@ -25,4 +25,11 @@ export interface DonutConfiguration {
 	 * @default ["donut", "d"]
 	 */
 	prefixes: string[];
+
+	/**
+	 * The developers of the bot.
+	 * @default ["852588734104469535", "390156982730096640"]
+	 **/
+
+	developers: string[];
 }

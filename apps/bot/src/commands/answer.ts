@@ -36,6 +36,8 @@ const options = {
 	name: "answer",
 	description: "Answer a question",
 	aliases: ["gpt", "chat", "cohere", "donut"],
+	contexts: ["Guild", "BotDM", "PrivateChannel"],
+	integrationTypes: ["UserInstall", "GuildInstall"],
 })
 
 @Options(options)
