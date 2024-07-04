@@ -30,7 +30,7 @@ export default class Eval extends Command {
 			let isPromise = false;
 
 			result instanceof Promise ||
-			(result instanceof Object && "then" in result)
+				(result instanceof Object && "then" in result)
 				? (isPromise = true)
 				: (isPromise = false);
 			isPromise ? (result = await result) : (result = result);
