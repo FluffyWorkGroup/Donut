@@ -1,7 +1,7 @@
 import { inspect } from "bun";
 import {
 	Command,
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	Embed,
@@ -26,14 +26,18 @@ const options = {
 export default class Eval extends Command {
 	async run(ctx: CommandContext<typeof options>) {
 		try {
-			let result = eval(ctx.options.code);
+			const evl = globalThis;
+			let result = evl.eval(ctx.options.code);
 			let isPromise = false;
 
 			result instanceof Promise ||
-				(result instanceof Object && "then" in result)
-				? (isPromise = true)
-				: (isPromise = false);
-			isPromise ? (result = await result) : (result = result);
+			(result instanceof Object && "then" in result)
+				? // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+					(isPromise = true)
+				: // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+					(isPromise = false);
+			// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+			isPromise ? (result = await result) : result;
 
 			ctx.write({
 				embeds: [
