@@ -6,7 +6,6 @@ import {
 	Options,
 	createStringOption,
 	type CommandContext,
-	type RegisteredMiddlewares,
 } from "seyfert";
 const ai = await import("ai-wrapper/models");
 
@@ -27,8 +26,13 @@ export default class Test extends Command {
 		try {
 			const response = await ai.models.blackbox.donut([
 				{
-					content: ctx.options.content,
+					content: `The username for the user is ${ctx.author.username}`,
 					id: "1",
+					role: "system",
+				},
+				{
+					content: ctx.options.content,
+					id: "2",
 					role: "user",
 				},
 			]);
