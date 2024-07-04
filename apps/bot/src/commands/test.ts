@@ -16,14 +16,11 @@ const options = {
 		required: true,
 	}),
 };
-
 @Declare({
 	name: "test",
 	description: "runs test command",
 })
-
 @Options(options)
-
 @Middlewares(["checkDeveloperStatus"])
 export default class Test extends Command {
 	async run(ctx: CommandContext<typeof options>) {
