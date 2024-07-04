@@ -33,7 +33,7 @@ const options = {
 };
 
 @Declare({
-	name: "answer",
+	name: "ask",
 	description: "Answer a question",
 	aliases: ["gpt", "chat", "cohere", "donut"],
 	contexts: ["Guild", "BotDM", "PrivateChannel"],
