@@ -1,4 +1,4 @@
-import { CommandContext, createMiddleware } from "seyfert";
+import { createMiddleware } from "seyfert";
 
 export const logCommand = createMiddleware<void>(async ({ context, next }) => {
 	const { client, author, command } = context;

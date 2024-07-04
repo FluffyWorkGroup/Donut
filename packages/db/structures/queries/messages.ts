@@ -1,11 +1,5 @@
-import type { Chat, Message, User } from "@prisma/client";
-import {
-	findOrCreateChatByAuthorId,
-	findUserByChatID,
-	getChat,
-	logger,
-	prisma,
-} from "..";
+import type { Message } from "@prisma/client";
+import { findUserByChatID, getChat, logger, prisma } from "..";
 import type { GetBatchResult } from "@prisma/client/runtime/library";
 
 /**

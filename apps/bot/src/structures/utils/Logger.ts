@@ -71,7 +71,7 @@ export function getWatermark(): void {
  */
 
 export function customLogger(
-	logger: Logger,
+	_logger: Logger,
 	level: LogLevels,
 	args: unknown[],
 ): unknown[] | undefined {

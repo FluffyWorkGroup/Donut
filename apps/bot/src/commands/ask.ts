@@ -17,7 +17,6 @@ import {
 	SelectMenu,
 	Options,
 	createStringOption,
-	createBooleanOption,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
 
@@ -125,7 +124,7 @@ export default class Answer extends Command {
 				],
 				components: [ActionRow],
 			});
-		} catch (error) {
+		} catch {
 			ctx.editOrReply({
 				content: "An error occurred, please try again later",
 			});

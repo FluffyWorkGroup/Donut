@@ -4,7 +4,6 @@ import {
 	deleteMessage,
 	findMessagesByUserID,
 	findOrCreateChatByAuthorId,
-	findOrCreateUser,
 } from "../queries";
 
 export async function injectNewMessageInChat(

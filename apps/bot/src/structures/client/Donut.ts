@@ -22,10 +22,10 @@ export class Donut extends Client<true> {
 				parse: ["roles"],
 			},
 			commands: {
-				prefix: (msg) => {
+				prefix: () => {
 					return this.config.prefixes;
 				},
-				reply: (ctx) => true,
+				reply: () => true,
 			},
 		});
 

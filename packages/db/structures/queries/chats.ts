@@ -1,6 +1,6 @@
 import type { Chat, Message, User } from "@prisma/client";
 import { findOrCreateUser, logger, prisma } from "..";
-import { BOT_ID, DEFAULT_MODEL, systemPrompt } from "@donut/common";
+import { systemPrompt } from "@donut/common";
 
 /**
  * Retrieves all chats from the database.

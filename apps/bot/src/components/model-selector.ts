@@ -1,10 +1,6 @@
 import { findOrCreateUser, updateUser } from "db";
 import { MessageFlags } from "discord-api-types/v10";
-import {
-	ComponentCommand,
-	type ComponentContext,
-	type ContextComponentCommandInteractionMap,
-} from "seyfert";
+import { ComponentCommand, type ComponentContext } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
 
 export default class ModelSelector extends ComponentCommand {
