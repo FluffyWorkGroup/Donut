@@ -3,9 +3,10 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.2",
     "@types/bun": "latest",
-    "turbo": "latest",
+    "biome-config": "workspace:*",
+    "husky": "^9.0.11",
     "tsconfig": "workspace:*",
-    "biome-config": "workspace:*"
+    "turbo": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -24,9 +25,18 @@
     "dev:debug": "turbo dev:debug",
     "start": "turbo start",
     "lint": "biome lint apps/ packages/",
-    "format": "biome format --write apps/ packages/"
+    "format": "biome format --write apps/ packages/",
+    "prepare": "husky"
   },
-  "trustedDependencies": ["@biomejs/biome", "@prisma/client", "@prisma/engines", "prisma"],
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@prisma/client",
+    "@prisma/engines",
+    "prisma"
+  ],
   "type": "module",
-  "workspaces": ["packages/*", "apps/*"]
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
 }
