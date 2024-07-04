@@ -1,4 +1,5 @@
 const ai = await import("ai-wrapper/models");
+import { DEBUG } from "@donut/common";
 import {
 	findMessagesByUserID,
 	findOrCreateUser,
@@ -26,9 +27,6 @@ const options = {
 		required: true,
 		max_length: 600,
 		min_length: 3,
-	}),
-	debug: createBooleanOption({
-		description: "Enable debug mode",
 	}),
 };
 
@@ -110,7 +108,7 @@ export default class Answer extends Command {
 			);
 
 			ctx.editOrReply({
-				content: ctx.options.debug?.valueOf()
+				content: DEBUG
 					? `DEBUG INFO: Took ${Date.now() - date}ms\nCHAT ID: ${message.chatId}\nMESSAGES INYECTED: [USER] ${message.id} [BOT] ${messageBot.id}\nREQUEST: ${JSON.stringify(response.system_fingerprint)} ${JSON.stringify(response.usage)}`
 					: "",
 				embeds: [
