@@ -9,7 +9,7 @@ export interface BlackBoxMessage {
 
 async function fetchResponse(
 	messages: BlackBoxMessage[],
-	agent: keyof typeof agents,
+	agent: keyof typeof agents = "donut",
 ) {
 	logger.debug("Fetching response from BlackBox.ai");
 
@@ -22,10 +22,7 @@ async function fetchResponse(
 			messages: messages,
 			previewToken: undefined,
 			codeModelModel: true,
-			agentMode: {
-				mode: true,
-				id: "donutdBdXXgi",
-			},
+			agentMode: agent ? { mode: true, id: agents[agent] } : { mode: false },
 			trendingAgentMode: {},
 			isMicMode: false,
 			maxTokens: 1024,
@@ -37,10 +34,10 @@ async function fetchResponse(
 	return response.text();
 }
 
-export const BlackBox_models = Object.values(agents).reduce(
+export const BlackBox_models = Object.keys(agents).reduce(
 	(acc, agent) => {
-		acc[agent] = async (messages: BlackBoxMessage[]) =>
-			fetchResponse(messages, agent);
+		acc[agent as keyof typeof agents] = async (messages: BlackBoxMessage[]) =>
+			fetchResponse(messages, agent as keyof typeof agents);
 		return acc;
 	},
 	{} as Record<
