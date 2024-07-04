@@ -4,7 +4,7 @@ import { agents } from "../../agents/blackbox";
 export interface BlackBoxMessage {
 	content: string;
 	id: string;
-	role: "user" | "assistant";
+	role: "user" | "assistant" | "system";
 }
 
 async function fetchResponse(
@@ -31,7 +31,11 @@ async function fetchResponse(
 
 	logger.debug("Response from BlackBox.ai", response);
 
-	return response.text();
+	return formatMessage(await response.text());
+}
+
+function formatMessage(message: string): string {
+	return message.replace(/\$@\$(v=[^$@]+)\$@\$/g, "");
 }
 
 export const BlackBox_models = Object.keys(agents).reduce(

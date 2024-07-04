@@ -15,7 +15,7 @@ import type {
 import type { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions.mjs";
 import { logger } from "../..";
 
-const regions: ChatModel[] = [
+export const regions: ChatModel[] = [
 	"gpt-4o",
 	"gpt-4o-2024-05-13",
 	"gpt-4-turbo",
@@ -39,7 +39,7 @@ const regions: ChatModel[] = [
 	"gpt-3.5-turbo-16k-0613",
 ];
 
-const nonStreamingRegions: CompletionCreateParamsBase["model"][] = [
+export const nonStreamingRegions: CompletionCreateParamsBase["model"][] = [
 	"gpt-3.5-turbo-instruct",
 	"davinci-002",
 	"babbage-002",
