@@ -28,9 +28,9 @@ export async function injectNewMessageInChat(
 	const chatsWithAuthor = await findOrCreateChatByAuthorId(author);
 	const messages = await findMessagesByUserID(author.id);
 
-	if (messages.length >= 10) {
+	if (messages.length >= 50) {
 		logger.debug(
-			`Detected 10 messages from ${author.username} with ID ${author.id}, deleting the oldest message...`,
+			`Detected 50 messages from ${author.username} with ID ${author.id}, deleting the oldest message...`,
 		);
 		const oldestMessage = messages
 			.filter((m) => m.role !== "system")
