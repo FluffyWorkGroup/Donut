@@ -1,22 +1,23 @@
-const ai = await import("ai-wrapper/models");
 import { DEBUG } from "@donut/common";
+import { ask } from "ai-wrapper";
 import {
 	findMessagesByUserID,
 	findOrCreateUser,
 	injectNewMessageInChat,
 } from "db";
 import {
+	ButtonStyle,
 	ComponentType,
 	type APIActionRowComponent,
-	type APISelectMenuComponent,
+	type APIButtonComponent,
 } from "discord-api-types/v10";
 import {
 	Command,
 	type CommandContext,
 	Declare,
-	SelectMenu,
 	Options,
 	createStringOption,
+	Button,
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
 
@@ -41,92 +42,75 @@ const options = {
 export default class Answer extends Command {
 	async run(ctx: CommandContext<typeof options>) {
 		try {
+			await ctx.deferReply(false);
 			const date = Date.now();
-			const model =
-				ctx.client.usersDBCache.get(ctx.author.id) ??
-				(await findOrCreateUser(ctx.author.id, ctx.author.username)).model;
+			const user = await findOrCreateUser(ctx.author.id, ctx.author.username);
 
-			const message = await injectNewMessageInChat(
-				{
-					username: ctx.author.username,
-					id: ctx.author.id,
-				},
-				{
-					content: ctx.options.prompt,
-					role: "user",
-				},
-			);
+			const message = await injectNewMessageInChat(user, {
+				content: ctx.options.prompt,
+				role: "user",
+			});
 
-			ctx.deferReply(false);
+			const response = await ask(user.model as "donutdBdXXgi", [
+				...(await findMessagesByUserID(ctx.author.id))
+					.filter((m) => m.chatId === message.chatId)
+					.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+					.map((user) => {
+						return {
+							content: user.content,
+							role: user.role as "user" | "assistant",
+							id: user.chatId,
+						};
+					}),
+			]);
 
-			const models = Object.keys(ai.models.openai.gpt.chat.stream);
+			const messageBot = await injectNewMessageInChat(user, {
+				content:
+					typeof response === "string"
+						? response ?? "No response"
+						: response.choices[0].message.content ?? "No response",
+				role: "assistant",
+			});
 
-			const menu = new SelectMenu({
-				options: models.map((model) => ({
-					label: model,
-					value: model,
-				})),
-				type: ComponentType.StringSelect,
-			})
+			const debugInfo = `DEBUG INFO: Took ${Date.now() - date}ms\nCHAT ID: ${message.chatId}\nMESSAGES INYECTED: [USER] ${message.id} [BOT] ${messageBot.id}\n${typeof response === "string" ? "REQUEST: No request" : `REQUEST: ${JSON.stringify(response.system_fingerprint)} ${JSON.stringify(response.usage)}`}`;
+			const buttons = new Button()
+				.setEmoji("🤖")
+				.setStyle(ButtonStyle.Secondary)
 				.setCustomId(`model:${ctx.author.id}`)
-				.setPlaceholder("Select a model")
 				.toJSON();
-
 			const ActionRow = {
 				type: ComponentType.ActionRow,
-				components: [menu],
-			} as APIActionRowComponent<APISelectMenuComponent>;
-
-			const response = await ai.models.openai.gpt.chat.normal[
-				model as keyof typeof ai.models.openai.gpt.chat.normal
-			](
-				[
-					...((await findMessagesByUserID(ctx.author.id))
-						.filter((m) => m.chatId === message.chatId)
-						.map((user) => {
-							return {
-								content: user.content,
-								role: user.role as "user" | "assistant",
-							};
-						}) ?? []),
-				],
-				{
-					max_tokens: 600,
-				},
-			);
-
-			const messageBot = await injectNewMessageInChat(
-				{
-					username: "Donut",
-					id: ctx.author.id,
-				},
-				{
-					content: response.choices[0].message.content ?? "No response",
-					role: "assistant",
-				},
-			);
+				components: [buttons],
+			} as APIActionRowComponent<APIButtonComponent>;
 
 			ctx.editOrReply({
-				content: DEBUG
-					? `DEBUG INFO: Took ${Date.now() - date}ms\nCHAT ID: ${message.chatId}\nMESSAGES INYECTED: [USER] ${message.id} [BOT] ${messageBot.id}\nREQUEST: ${JSON.stringify(response.system_fingerprint)} ${JSON.stringify(response.usage)}`
-					: "",
+				content: DEBUG ? debugInfo : "",
 				embeds: [
 					{
 						author: {
-							name: model,
+							name: `Model: ${user.model}`,
 						},
-						description: response.choices[0].message.content ?? "No response",
+						description:
+							typeof response === "string"
+								? response ?? "No response"
+								: response.choices[0].message.content ?? "No response",
 						footer: {
-							text: `Took ${Date.now() - date}ms`,
+							text: `Took ${(Date.now() - date) / 1000}s`,
 						},
 						color: EmbedColors.Blue,
 					},
 				],
 				components: [ActionRow],
 			});
-		} catch {
+		} catch (error) {
+			console.log(error);
 			ctx.editOrReply({
-				content: "An error occurred, please try again later",
+				embeds: [
+					{
+						description: "An error occurred, please try again later",
+						color: EmbedColors.Red,
+					},
+				],
 			});
 		}
 	}
