@@ -107,8 +107,20 @@ async function completionRequest(
 	return response;
 }
 
+/**
+ * The `gpt` object contains methods for interacting with the GPT model.
+ */
 export const gpt = {
+	/**
+	 * The `chat` object contains methods for generating chat completions using the GPT model.
+	 */
 	chat: {
+		/**
+		 * The `stream` method generates chat completions using the GPT model in a streaming fashion.
+		 * @param params - An array of chat completion message parameters.
+		 * @param optionalParams - Optional parameters for the chat completion request.
+		 * @returns A promise that resolves to the API response containing a stream of chat completion chunks.
+		 */
 		stream: regions.reduce(
 			(acc, region) => {
 				acc[region] = async (
@@ -138,6 +150,12 @@ export const gpt = {
 				) => Promise<APIPromise<Stream<ChatCompletionChunk>>>
 			>,
 		),
+		/**
+		 * The `normal` method generates chat completions using the GPT model in a non-streaming fashion.
+		 * @param params - An array of chat completion message parameters.
+		 * @param optionalParams - Optional parameters for the chat completion request.
+		 * @returns A promise that resolves to the API response containing the chat completion.
+		 */
 		normal: regions.reduce(
 			(acc, region) => {
 				acc[region] = async (
@@ -168,6 +186,12 @@ export const gpt = {
 			>,
 		),
 	},
+	/**
+	 * The `completions` object contains methods for generating completions using the GPT model in non-streaming regions.
+	 * @param params - The prompt or input for the completion request.
+	 * @param optionalParams - Optional parameters for the completion request.
+	 * @returns A promise that resolves to the completion response from the API.
+	 */
 	completions: nonStreamingRegions.reduce(
 		(acc, region) => {
 			acc[region] = async (
