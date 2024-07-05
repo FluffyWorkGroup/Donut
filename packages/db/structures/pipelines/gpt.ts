@@ -6,6 +6,12 @@ import {
 	findOrCreateChatByAuthorId,
 } from "../queries";
 
+/**
+ * Injects a new message into the chat.
+ * @param author - The author of the message.
+ * @param message - The content and role of the message.
+ * @returns A promise that resolves to the created message.
+ */
 export async function injectNewMessageInChat(
 	author: {
 		username: string;
