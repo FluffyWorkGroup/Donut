@@ -1,5 +1,3 @@
-import type { agents } from "ai-wrapper";
-
 export const systemPrompt = `
 **Chat Rules:**
 
@@ -30,5 +28,4 @@ export const systemPrompt = `
 export const DEBUG =
 	!!process.argv.includes("dev") || !!process.argv.includes("debug");
 
-export const DEFAULT_MODEL =
-	"donutdBdXXgi" as (typeof agents)[keyof typeof agents];
+export const DEFAULT_MODEL = "donut";
