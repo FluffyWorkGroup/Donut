@@ -30,6 +30,11 @@
 			"persistent": true,
 			"cache": false
 		},
+		"setup": {
+			"dependsOn": ["^setup"],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**"],
+			"inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"]
+		},
 		"start": {
 			"persistent": true,
 			"cache": false,
