@@ -78,6 +78,7 @@ export default class Answer extends Command {
 				.setStyle(ButtonStyle.Secondary)
 				.setCustomId(`model:${ctx.author.id}`)
 				.toJSON();
+
 			const ActionRow = {
 				type: ComponentType.ActionRow,
 				components: [buttons],
