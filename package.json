@@ -1,43 +1,44 @@
 {
-	"name": "donut",
-	"devDependencies": {
-		"@biomejs/biome": "^1.8.2",
-		"@types/bun": "latest",
-		"biome-config": "workspace:*",
-		"husky": "^9.0.11",
-		"tsconfig": "workspace:*",
-		"turbo": "latest"
-	},
-	"peerDependencies": {
-		"typescript": "^5.0.0"
-	},
-	"lint-staged": {
-		"*.ts": [
-			"biome lint app/ packages/",
-			"biome format --write apps/ packages/"
-		]
-	},
-	"packageManager": "bun@1.0.0",
-	"private": true,
-	"scripts": {
-		"build": "turbo build",
-		"dev": "turbo dev",
-		"dev:debug": "turbo dev:debug",
-		"db:generate": "turbo db:generate",
-		"db:push": "turbo db:push",
-		"db:studio": "turbo db:studio",
-		"start": "turbo start",
-		"lint": "biome lint apps/ packages/",
-		"format": "biome format --write apps/ packages/",
-		"setup": "bun db:push && bun db:generate && echo 'Please add your bot token to .env in apps/bot folder'",
-		"prepare": "husky"
-	},
-	"trustedDependencies": [
-		"@biomejs/biome",
-		"@prisma/client",
-		"@prisma/engines",
-		"prisma"
-	],
-	"type": "module",
-	"workspaces": ["packages/*", "apps/*"]
+  "name": "donut",
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.2",
+    "@types/bun": "latest",
+    "biome-config": "workspace:*",
+    "husky": "^9.0.11",
+    "tsconfig": "workspace:*",
+    "turbo": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "biome lint app/ packages/",
+      "biome format --write apps/ packages/"
+    ]
+  },
+  "packageManager": "bun@1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:debug": "turbo dev:debug",
+    "db:generate": "turbo db:generate",
+    "db:push": "turbo db:push",
+    "db:studio": "turbo db:studio",
+    "start": "turbo start",
+    "lint": "biome lint apps/ packages/",
+    "format": "biome format --write apps/ packages/",
+    "setup": "bun db:push && bun db:generate && echo 'Please add your bot token to .env in apps/bot folder'",
+    "prepare": "husky"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@prisma/client",
+    "@prisma/engines",
+    "prisma",
+    "husky"
+  ],
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"]
 }
