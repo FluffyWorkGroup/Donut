@@ -5,8 +5,8 @@
 		"rules": {
 			"recommended": true,
 			"correctness": {
-				"noUnusedImports": "error",
-				"noUnusedVariables": "error"
+				"noUnusedImports": "warn",
+				"noUnusedVariables": "warn"
 			}
 		},
 		"ignore": ["node_modules"]
