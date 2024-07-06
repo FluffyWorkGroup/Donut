@@ -95,7 +95,7 @@ export default class Answer extends Command {
 								? response ?? "No response"
 								: response.choices[0].message.content ?? "No response",
 						footer: {
-							text: `Took ${(Date.now() - date) / 1000}s`,
+							text: `Took ${((Date.now() - date) / 1000).toFixed(1)}s`,
 						},
 						color: EmbedColors.Blue,
 					},
