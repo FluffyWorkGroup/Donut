@@ -12,7 +12,7 @@ export default class ModelSelector extends ComponentCommand {
 	}
 
 	async run(context: ComponentContext<typeof this.componentType>) {
-		const message = await context.write({
+		await context.write({
 			embeds: [
 				{
 					description: "***Por implementar...***",
