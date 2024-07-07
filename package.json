@@ -33,7 +33,7 @@
 		"start:web": "turbo start --filter=web",
 		"lint": "biome lint apps/ packages/",
 		"format": "biome format --write apps/ packages/",
-		"setup": "bun db:push && bun db:generate && echo 'Please add your bot token to .env in apps/bot folder and your database url in packages/db folder'",
+		"postinstall": "bun db:push && bun db:generate && echo 'Please add your bot token to .env in apps/bot folder and your database url in packages/db folder'",
 		"prepare": "husky"
 	},
 	"trustedDependencies": [
