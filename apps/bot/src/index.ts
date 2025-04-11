@@ -1,14 +1,5 @@
-import { Logger } from "seyfert";
-import { Donut } from "./structures/client/Donut";
-import { customLogger } from "./structures/utils/Logger";
-import { validateEnv } from "./structures/utils/functions/validateEnv";
+import { Client } from "seyfert";
 
-Logger.customize(customLogger);
-Logger.saveOnFile = "all";
-Logger.dirname = "logs";
+const client = new Client();
 
-validateEnv();
-
-const client = new Donut();
-
-export default client;
+client.start();

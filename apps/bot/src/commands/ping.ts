@@ -1,23 +1,16 @@
-import { Command, Declare } from "seyfert";
-import type { CommandContext } from "seyfert";
-import { EmbedColors } from "seyfert/lib/common";
+import { Command, CommandContext, Declare, Embed } from "seyfert";
 
 @Declare({
-	name: "ping",
-	description: "Checks the latency of the bot.",
+    name: "ping",
+    description: "Ping the bot",
+    aliases: ["p"],
 })
-export default class Ping extends Command {
-	async run(ctx: CommandContext) {
-		const ping = ctx.client.gateway.latency;
-
-		await ctx.write({
-			embeds: [
-				{
-					title: "Pong!",
-					description: `🏓 ${ping}ms`,
-					color: EmbedColors.Blue,
-				},
-			],
-		});
-	}
+export class PingCommand extends Command {
+    async run(ctx: CommandContext) {
+        const ping = ctx.client.gateway.latency;
+        const embed = new Embed()
+            .setTitle("Ping")
+            .setDescription(`Pong! ${ping}ms`);
+        ctx.write({ embeds: [embed] });
+    }
 }

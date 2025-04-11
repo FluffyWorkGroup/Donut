@@ -1,8 +1,8 @@
 import { createEvent } from "seyfert";
 
 export default createEvent({
-	data: { once: true, name: "ready" },
-	run(user, client) {
-		client.logger.info(`Logged in as ${user.tag}!`);
-	},
+    data: { once: true, name: "botReady" },
+        run: (client) => {
+        console.log(`Logged in as ${client.username}`);
+    },
 });
