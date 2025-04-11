@@ -1,20 +1,16 @@
 {
-	"name": "bot",
-	"version": "0.0.0",
-	"scripts": {
-		"dev": "bun run --watch --bun src/index.ts",
-		"dev:debug": "bun run --watch --bun src/index.ts dev",
-		"start": "bun run --bun src/index.ts start"
-	},
-	"dependencies": {
-		"@donut/common": "workspace:*",
-		"ai-wrapper": "workspace:*",
-		"chalk": "^5.3.0",
-		"db": "workspace:*",
-		"discord-api-types": "^0.37.90",
-		"seyfert": "^2.1.0"
-	},
-	"devDependencies": {
-		"tsconfig": "workspace:*"
-	}
+    "name": "bot",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "dev": "bun run src/index.ts",
+        "build": "rm -rf dist && bun run src/build.ts",
+        "start": "bun run dist/index.js"
+    },
+    "dependencies": {
+        "seyfert": "2.2.0"
+    },
+    "devDependencies": {
+        "tsconfig": "workspace:*"
+    }
 }
